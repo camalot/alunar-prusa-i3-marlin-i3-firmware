@@ -8,4 +8,4 @@
 5. Choose USB serial port
 6. Upload firmware to board `File -> Upload (CTRL+U)`
 
-![](https://github.com/camalot/alunar-prusa-i3-marlin-i3-firmware/raw/develop/assets/finish-c.jpg)
+![](https://github.com/camalot/alunar-prusa-i3-marlin-i3-firmware/raw/develop/assets/finish-A.jpg)
