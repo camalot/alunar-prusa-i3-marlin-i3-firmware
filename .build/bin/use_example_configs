@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+eval "cp Marlin_I3/example_configurations/${1}/Configuration* Marlin_I3/"
+
+if [ -f "Marlin_I3/example_configurations/${1}/_Bootscreen.h" ]; then
+  cp "Marlin_I3/example_configurations/${1}/_Bootscreen.h" Marlin_I3/
+fi

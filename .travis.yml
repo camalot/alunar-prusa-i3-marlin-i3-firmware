@@ -51,16 +51,16 @@ before_script:
   - cd ${TRAVIS_BUILD_DIR}
   #
   # Generate custom version include
-  - generate_version_header_for_marlin ${TRAVIS_BUILD_DIR}/Marlin
-  - cat ${TRAVIS_BUILD_DIR}/Marlin/_Version.h
+  - generate_version_header_for_marlin ${TRAVIS_BUILD_DIR}/Marlin_I3
+  - cat ${TRAVIS_BUILD_DIR}/Marlin_I3/_Version.h
   #
 script:
   #
   # Backup Configuration.h, Configuration_adv.h, and pins_RAMPS.h
   #
-  - cp Marlin/Configuration.h Marlin/Configuration.h.backup
-  - cp Marlin/Configuration_adv.h Marlin/Configuration_adv.h.backup
-  - cp Marlin/pins_RAMPS.h Marlin/pins_RAMPS.h.backup
+  - cp Marlin_I3/Configuration.h Marlin_I3/Configuration.h.backup
+  - cp Marlin_I3/Configuration_adv.h Marlin_I3/Configuration_adv.h.backup
+  - cp Marlin_I3/pins_RAMPS.h Marlin_I3/pins_RAMPS.h.backup
   #
   # Build with the default configurations
   #
