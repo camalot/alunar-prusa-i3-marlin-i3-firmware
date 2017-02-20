@@ -126,7 +126,7 @@
 
 
 
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {80,80,2500,94.49}  // default steps per unit
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {80,80,400,80}  // default steps per unit
 #define DEFAULT_MAX_FEEDRATE          {500, 500, 2, 25}    // (mm/sec)
 #define DEFAULT_MAX_ACCELERATION      {9000,9000,20,10000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
 //
