@@ -1,4 +1,4 @@
-
+#define CONFIG_H_ALUNAR
 
 #define STRING_CONFIG_H_AUTHOR "@camalot (Ryan Conrad)" // Who made the changes.
 #define SHOW_BOOTSCREEN
@@ -13,6 +13,9 @@
 // Define this to set a unique identifier for this printer, (Used by some programs to differentiate between machines)
 // You can use an online service to generate a random UUID. (eg http://www.uuidgenerator.net/version4)
 #define MACHINE_UUID "21a92960-ce8e-4db3-8763-db376e2097aa"
+
+#define WEBSITE_URL "http://marlinfw.org"
+
 
 // This defines the number of extruders
 #define EXTRUDERS 1
@@ -84,9 +87,9 @@
 // When temperature exceeds max temp, your heater will be switched off.
 // This feature exists to protect your hotend from overheating accidentally, but *NOT* from thermistor short/failure!
 // You should use MINTEMP for thermistor short/failure protection.
-#define HEATER_0_MAXTEMP 275
-#define HEATER_1_MAXTEMP 275
-#define HEATER_2_MAXTEMP 275
+#define HEATER_0_MAXTEMP 240
+#define HEATER_1_MAXTEMP 240
+#define HEATER_2_MAXTEMP 240
 #define BED_MAXTEMP 115
 
 
@@ -112,9 +115,9 @@
 // - Move the Z probe (or nozzle) to a defined XY point before Z Homing when homing all axes (G28).
 // - Prevent Z homing when the Z probe is outside bed area.
 
-#define X_MAX_POS 270
+#define X_MAX_POS 220
 #define X_MIN_POS 0
-#define Y_MAX_POS 270
+#define Y_MAX_POS 220
 #define Y_MIN_POS 0
 #define Z_MAX_POS 185
 #define Z_MIN_POS 0
@@ -126,8 +129,8 @@
 
 
 
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {80,80,400,80}  // default steps per unit
-#define DEFAULT_MAX_FEEDRATE          {500, 500, 2, 25}    // (mm/sec)
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {100,100,400,92.6}  // default steps per unit
+#define DEFAULT_MAX_FEEDRATE          {400, 400, 4, 25}    // (mm/sec)
 #define DEFAULT_MAX_ACCELERATION      {9000,9000,20,10000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
 //
 // #define DEFAULT_ACCELERATION          3000    // X, Y, Z and E max acceleration in mm/s^2 for printing moves
@@ -151,10 +154,10 @@
 #define Z_SAFE_HOMING
 
 #if ENABLED(Z_SAFE_HOMING)
-  // #define Z_SAFE_HOMING_X_POINT ((X_MIN_POS + X_MAX_POS) / 2)    // X point for Z homing when homing all axis (G28).
-  // #define Z_SAFE_HOMING_Y_POINT ((Y_MIN_POS + Y_MAX_POS) / 2)    // Y point for Z homing when homing all axis (G28).
+  #define Z_SAFE_HOMING_X_POINT ((X_MIN_POS + X_MAX_POS) / 2)    // X point for Z homing when homing all axis (G28).
+  #define Z_SAFE_HOMING_Y_POINT ((Y_MIN_POS + Y_MAX_POS) / 2)    // Y point for Z homing when homing all axis (G28).
 
-  #define Z_SAFE_HOMING_X_POINT 145    // X point for Z homing when homing all axis (G28).
-  #define Z_SAFE_HOMING_Y_POINT 145    // Y point for Z homing when homing all axis (G28).
+  // #define Z_SAFE_HOMING_X_POINT 145    // X point for Z homing when homing all axis (G28).
+  // #define Z_SAFE_HOMING_Y_POINT 145    // Y point for Z homing when homing all axis (G28).
 
 #endif
