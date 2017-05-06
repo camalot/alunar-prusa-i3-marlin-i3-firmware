@@ -24,6 +24,10 @@
  * AZTEEG_X3_PRO (Arduino Mega) pin assignments
  */
 
+#if HOTENDS > 5 || E_STEPPERS > 5
+  #error "Azteeg X3 Pro supports up to 5 hotends / E-steppers. Comment out this line to continue."
+#endif
+
 #define BOARD_NAME "Azteeg X3 Pro"
 
 #include "pins_RAMPS.h"
@@ -103,7 +107,9 @@
 #undef FAN_PIN
 #define FAN_PIN             6 // Part Cooling System
 
-#define CONTROLLERFAN_PIN   4 // Pin used for the fan to cool motherboard (-1 to disable)
+#ifndef CONTROLLER_FAN_PIN
+  #define CONTROLLER_FAN_PIN 4 // Pin used for the fan to cool motherboard (-1 to disable)
+#endif
 
 // Fans/Water Pump to cool the hotend cool side.
 #define ORIG_E0_AUTO_FAN_PIN 5

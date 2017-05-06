@@ -37,6 +37,8 @@
   #include "pins_CNCONTROLS_12.h"
 #elif MB(CHEAPTRONIC)
   #include "pins_CHEAPTRONIC.h"
+#elif MB(CHEAPTRONIC_V2)
+  #include "pins_CHEAPTRONICv2.h"
 #elif MB(SETHI)
   #include "pins_SETHI.h"
 #elif MB(MIGHTYBOARD_REVE)
@@ -135,7 +137,7 @@
   #include "pins_MEGATRONICS_3.h"
 #elif MB(MEGATRONICS_31)
   #define MEGATRONICS_31
-  #include "pins_MEGATRONICS_3.h" 
+  #include "pins_MEGATRONICS_3.h"
 #elif MB(OMCA_A)
   #include "pins_OMCA_A.h"
 #elif MB(OMCA)
@@ -166,8 +168,8 @@
   #include "pins_MEGACONTROLLER.h"
 #elif MB(BQ_ZUM_MEGA_3D)
   #include "pins_BQ_ZUM_MEGA_3D.h"
-#elif MB(AJ4P)
-  #include "pins_AJ4P.h"
+#elif MB(SCOOVO_X9H)
+  #include "pins_SCOOVO_X9H.h"
 #elif MB(MKS_13)
   #include "pins_MKS_13.h"
 #elif MB(SAINSMART_2IN1)
@@ -217,8 +219,8 @@
 #ifndef FAN2_PIN
   #define FAN2_PIN -1
 #endif
-#ifndef CONTROLLERFAN_PIN
-  #define CONTROLLERFAN_PIN  -1
+#ifndef CONTROLLER_FAN_PIN
+  #define CONTROLLER_FAN_PIN  -1
 #endif
 
 #ifndef HEATER_0_PIN
@@ -252,6 +254,9 @@
 #ifndef TEMP_3_PIN
   #define TEMP_3_PIN -1
 #endif
+#ifndef TEMP_4_PIN
+  #define TEMP_4_PIN -1
+#endif
 #ifndef TEMP_BED_PIN
   #define TEMP_BED_PIN -1
 #endif
@@ -279,7 +284,7 @@
 #endif
 
 #ifndef MAX_EXTRUDERS
-  #define MAX_EXTRUDERS 4
+  #define MAX_EXTRUDERS 5
 #endif
 
 // Marlin needs to account for pins that equal -1
@@ -299,6 +304,9 @@
 #endif
 #if !defined(E3_AUTO_FAN_PIN) && defined(ORIG_E3_AUTO_FAN_PIN)
   #define E3_AUTO_FAN_PIN ORIG_E3_AUTO_FAN_PIN
+#endif
+#if !defined(E4_AUTO_FAN_PIN) && defined(ORIG_E4_AUTO_FAN_PIN)
+  #define E4_AUTO_FAN_PIN ORIG_E4_AUTO_FAN_PIN
 #endif
 
 // List of pins which to ignore when asked to change by gcode, 0 and 1 are RX and TX, do not mess with those!
@@ -320,10 +328,10 @@
       #if EXTRUDERS > 4
         #undef _E4_PINS
         #define _E4_PINS E4_STEP_PIN, E4_DIR_PIN, E4_ENABLE_PIN,
-      #endif
-    #endif
-  #endif
-#endif
+      #endif // EXTRUDERS > 4
+    #endif // EXTRUDERS > 3
+  #endif // EXTRUDERS > 2
+#endif // EXTRUDERS > 1
 
 #define _H0_PINS HEATER_0_PIN, E0_AUTO_FAN_PIN, marlinAnalogInputToDigitalPin(TEMP_0_PIN),
 #define _H1_PINS
@@ -343,9 +351,9 @@
       #if HOTENDS > 4
         #undef _H4_PINS
         #define _H4_PINS HEATER_4_PIN, marlinAnalogInputToDigitalPin(TEMP_4_PIN),
-      #endif
-    #endif
-  #endif
+      #endif // HOTENDS > 4
+    #endif // HOTENDS > 3
+  #endif // HOTENDS > 2
 #elif ENABLED(MIXING_EXTRUDER)
   #undef _E1_PINS
   #define _E1_PINS E1_STEP_PIN, E1_DIR_PIN, E1_ENABLE_PIN,
@@ -358,10 +366,10 @@
       #if MIXING_STEPPERS > 4
         #undef _E4_PINS
         #define _E4_PINS E4_STEP_PIN, E4_DIR_PIN, E4_ENABLE_PIN,
-      #endif
-    #endif
-  #endif
-#endif
+      #endif // MIXING_STEPPERS > 4
+    #endif // MIXING_STEPPERS > 3
+  #endif // MIXING_STEPPERS > 2
+#endif // MIXING_STEPPERS > 1
 
 #define BED_PINS HEATER_BED_PIN, marlinAnalogInputToDigitalPin(TEMP_BED_PIN),
 
@@ -453,6 +461,9 @@
     #define X2_STEP_PIN   _EPIN(E_STEPPERS, STEP)
     #define X2_DIR_PIN    _EPIN(E_STEPPERS, DIR)
     #define X2_ENABLE_PIN _EPIN(E_STEPPERS, ENABLE)
+    #if X2_ENABLE_PIN == 0
+      #error "No E stepper plug left for X2!"
+    #endif
   #endif
   #undef _X2_PINS
   #define _X2_PINS X2_STEP_PIN, X2_DIR_PIN, X2_ENABLE_PIN,
@@ -467,6 +478,9 @@
     #define Y2_STEP_PIN   _EPIN(Y2_E_INDEX, STEP)
     #define Y2_DIR_PIN    _EPIN(Y2_E_INDEX, DIR)
     #define Y2_ENABLE_PIN _EPIN(Y2_E_INDEX, ENABLE)
+    #if Y2_ENABLE_PIN == 0
+      #error "No E stepper plug left for Y2!"
+    #endif
   #endif
   #undef _Y2_PINS
   #define _Y2_PINS Y2_STEP_PIN, Y2_DIR_PIN, Y2_ENABLE_PIN,
@@ -481,6 +495,9 @@
     #define Z2_STEP_PIN   _EPIN(Z2_E_INDEX, STEP)
     #define Z2_DIR_PIN    _EPIN(Z2_E_INDEX, DIR)
     #define Z2_ENABLE_PIN _EPIN(Z2_E_INDEX, ENABLE)
+    #if Z2_ENABLE_PIN == 0
+      #error "No E stepper plug left for Z2!"
+    #endif
   #endif
   #undef _Z2_PINS
   #define _Z2_PINS Z2_STEP_PIN, Z2_DIR_PIN, Z2_ENABLE_PIN,
@@ -490,7 +507,7 @@
     X_STEP_PIN, X_DIR_PIN, X_ENABLE_PIN, X_MIN_PIN, X_MAX_PIN, \
     Y_STEP_PIN, Y_DIR_PIN, Y_ENABLE_PIN, Y_MIN_PIN, Y_MAX_PIN, \
     Z_STEP_PIN, Z_DIR_PIN, Z_ENABLE_PIN, Z_MIN_PIN, Z_MAX_PIN, Z_MIN_PROBE_PIN, \
-    PS_ON_PIN, HEATER_BED_PIN, FAN_PIN, FAN1_PIN, FAN2_PIN, CONTROLLERFAN_PIN, \
+    PS_ON_PIN, HEATER_BED_PIN, FAN_PIN, FAN1_PIN, FAN2_PIN, CONTROLLER_FAN_PIN, \
     _E0_PINS _E1_PINS _E2_PINS _E3_PINS _E4_PINS BED_PINS \
     _H0_PINS _H1_PINS _H2_PINS _H3_PINS _H4_PINS \
     _X2_PINS _Y2_PINS _Z2_PINS \

@@ -1,0 +1,3 @@
+@{
+	ArduinoPath = "D:\Applications\Arduino\"
+}

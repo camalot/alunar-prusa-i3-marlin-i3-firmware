@@ -8,13 +8,13 @@
 
 // Optional custom name for your RepStrap or other custom machine
 // Displayed in the LCD "Ready" message
-#define CUSTOM_MACHINE_NAME "Fruitbasket"
+#define CUSTOM_MACHINE_NAME "Ragnos"
 
 // Define this to set a unique identifier for this printer, (Used by some programs to differentiate between machines)
 // You can use an online service to generate a random UUID. (eg http://www.uuidgenerator.net/version4)
 #define MACHINE_UUID "21a92960-ce8e-4db3-8763-db376e2097aa"
 
-#define WEBSITE_URL "http://marlinfw.org"
+#define WEBSITE_URL "http://fuku.io"
 
 
 // This defines the number of extruders
