@@ -76,6 +76,12 @@
 #define TEMP_SENSOR_3 0
 #define TEMP_SENSOR_BED 1
 
+// If you are using a pre-configured hotend then you can use one of the value sets by uncommenting it
+// Ultimaker
+#define  DEFAULT_Kp 15.98
+#define  DEFAULT_Ki 0.80
+#define  DEFAULT_Kd 80.17
+
 // The minimal temperature defines the temperature below which the heater will not be enabled It is used
 // to check that the wiring to the thermistor is not broken.
 // Otherwise this would lead to the heater being powered on all the time.
