@@ -31,3 +31,7 @@
   #define WATCH_TEMP_PERIOD 20                // Seconds
   #define WATCH_TEMP_INCREASE 2               // Degrees Celsius
 #endif
+
+#define AUTO_REPORT_TEMPERATURES
+
+#define EXTENDED_CAPABILITIES_REPORT
