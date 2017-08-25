@@ -76,11 +76,23 @@
 #define TEMP_SENSOR_3 0
 #define TEMP_SENSOR_BED 1
 
-// If you are using a pre-configured hotend then you can use one of the value sets by uncommenting it
-// Ultimaker
-#define  DEFAULT_Kp 15.98
-#define  DEFAULT_Ki 0.80
-#define  DEFAULT_Kd 80.17
+#define PIDTEMP
+#if ENABLED(PIDTEMP)
+	#define  DEFAULT_Kp 49.98
+	#define  DEFAULT_Ki 2.81
+	#define  DEFAULT_Kd 196.28
+#endif // PIDTEMP
+
+#define PIDTEMPBED
+#if ENABLED(PIDTEMPBED)
+
+	#define  DEFAULT_bedKp 252.95
+	#define  DEFAULT_bedKi 46.78
+	#define  DEFAULT_bedKd 341.93
+
+	// FIND YOUR OWN: "M303 E-1 C8 S90" to run autotune on the bed at 90 degreesC for 8 cycles.
+
+#endif // PIDTEMPBED
 
 // The minimal temperature defines the temperature below which the heater will not be enabled It is used
 // to check that the wiring to the thermistor is not broken.
