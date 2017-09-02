@@ -21,9 +21,12 @@
  */
 
 /**
- * Azteeg X1 pin assignments
+ * Geeetech GT2560 Revision A+ board pin assignments
  */
 
-#define BOARD_NAME "Azteeg X1"
+#include "pins_GT2560_REV_A.h"
 
-#include "pins_SANGUINOLOLU_12.h"
+#undef BOARD_NAME
+#define BOARD_NAME  "GT2560 Rev.A+"
+
+#define SERVO0_PIN  11
