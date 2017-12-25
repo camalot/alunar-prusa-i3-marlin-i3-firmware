@@ -1,5 +1,5 @@
 {
-    "port": "COM6",
+    "port": "COM4",
     "board": "arduino:avr:mega",
     "configuration": "cpu=atmega2560",
     "sketch": "Marlin_I3\\Marlin_I3.ino"
