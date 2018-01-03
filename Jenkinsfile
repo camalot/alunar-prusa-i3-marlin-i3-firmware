@@ -42,7 +42,7 @@ node ("arduino") {
 			try {
 					stage ("install" ) {
 							deleteDir()
-							Branch.checkout_vsts(this, teamName, ProjectName)
+							Branch.checkout(this, ProjectName)
 							Pipeline.install(this)
 					}
 					stage ("build") {
