@@ -46,7 +46,17 @@ node ("arduino") {
 							Pipeline.install(this)
 					}
 					stage ("build") {
-						sh: script: "arduino --verify --board ${BOARD_ID} '${WORKSPACE}/Marlin_I3/Marlin_I3.ino'"
+						sh: script: """#!/usr/bin/env bash
+						mkdir -p ${WORKSPACE}/dist;
+						arduino-builder \
+							--compile \
+							-hardware /usr/local/bin/arduino/hardware \
+							-tools /usr/local/bin/arduino/hardware/tools \
+							-tools /usr/local/bin/arduino/tools-builder \
+							-fqbn ${BOARD_ID} \
+							-build-path '${WORKSPACE}/dist' \
+							'${INO_PATH}';
+						ls -lFa ${WORKSPACE}/dist;"""
 					}
 					stage ("test") {
 					}
