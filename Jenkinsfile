@@ -48,8 +48,10 @@ node ("arduino") {
 					stage ("build") {
 						echo "in build..."
 						sh script: """#!/usr/bin/env bash
+						set -e;
 						mkdir -p ${WORKSPACE}/dist;
-						arduino-builder \
+						# temp full path
+						/usr/local/bin/arduino/arduino-builder \
 							--compile \
 							-hardware /usr/local/bin/arduino/hardware \
 							-tools /usr/local/bin/arduino/hardware/tools \
