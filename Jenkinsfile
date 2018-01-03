@@ -46,7 +46,8 @@ node ("arduino") {
 							Pipeline.install(this)
 					}
 					stage ("build") {
-						sh: script: """#!/usr/bin/env bash
+						echo "in build..."
+						sh script: """#!/usr/bin/env bash
 						mkdir -p ${WORKSPACE}/dist;
 						arduino-builder \
 							--compile \
