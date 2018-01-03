@@ -1,5 +1,4 @@
-
-#!groovy
+//#!groovy
 import com.bit13.jenkins.*
 
 properties ([
