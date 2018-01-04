@@ -52,24 +52,28 @@ library-manager --name="LiquidCrystal_I2C" --version="latest";
 					}
 					stage ("build") {
 						echo "in build..."
-						// sh script: """#!/usr/bin/env bash
-						// set -e;
-						// mkdir -p ${WORKSPACE}/dist;
-						// # temp full path
+						sh script: """#!/usr/bin/env bash
+set -e;
+mkdir -p ${WORKSPACE}/dist;
+# temp full path
 
-						// arduino-builder \
-						// 	--compile \
-						// 	-verbose \
-						// 	-warnings more \
-						// 	-hardware /arduino/hardware \
-						// 	-tools /arduino/hardware/tools \
-						// 	-tools /arduino/tools-builder \
-						// 	-libraries /arduino/libraries \
-						// 	-fqbn ${BOARD_ID} \
-						// 	-build-path '${WORKSPACE}/dist' \
-						// 	'${INO_PATH}';
-						// ls -lFa ${WORKSPACE}/dist;"""
-						sh script: "${WORKSPACE}/.deploy/build.sh -n '${ProjectName}' -v '${env.CI_BUILD_VERSION}'";
+arduino-builder \
+	--compile \
+	-verbose \
+	-warnings more \
+	-hardware /arduino/hardware \
+	-tools /arduino/hardware/tools \
+	-tools /arduino/tools-builder \
+	-libraries /arduino/libraries \
+	-fqbn ${BOARD_ID} \
+	-build-path '${WORKSPACE}/dist' \
+	'${INO_PATH}';
+
+pushd .;
+zip --verbose ${CI_PROJECT_NAME}-${CI_BUILD_VERSION}.zip -xi ./*.hex
+ls -lFa ${WORKSPACE}/dist;
+popd;"""
+						// sh script: "${WORKSPACE}/.deploy/build.sh -n '${ProjectName}' -v '${env.CI_BUILD_VERSION}'";
 					}
 					stage ("test") {
 					}
