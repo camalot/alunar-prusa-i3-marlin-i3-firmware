@@ -44,6 +44,11 @@ node ("arduino") {
 							deleteDir()
 							Branch.checkout(this, ProjectName)
 							Pipeline.install(this)
+
+							sh script: """#!/usr/bin/env bash
+library-manager --name="LiquidCrystal" --version="latest";
+library-manager --name="LiquidCrystal_I2C" --version="latest";
+"""
 					}
 					stage ("build") {
 						echo "in build..."
@@ -51,11 +56,15 @@ node ("arduino") {
 						set -e;
 						mkdir -p ${WORKSPACE}/dist;
 						# temp full path
-						/usr/local/bin/arduino/arduino-builder \
+
+						arduino-builder \
 							--compile \
-							-hardware /usr/local/bin/arduino/hardware \
-							-tools /usr/local/bin/arduino/hardware/tools \
-							-tools /usr/local/bin/arduino/tools-builder \
+							-verbose \
+							-warnings more \
+							-hardware /arduino/hardware \
+							-tools /arduino/hardware/tools \
+							-tools /arduino/tools-builder \
+							-libraries /arduino/libraries \
 							-fqbn ${BOARD_ID} \
 							-build-path '${WORKSPACE}/dist' \
 							'${INO_PATH}';
@@ -67,7 +76,7 @@ node ("arduino") {
 							// sh script: "${WORKSPACE}/.deploy/deploy.sh -n '${ProjectName}' -v '${env.CI_BUILD_VERSION}'"
 					}
 					stage ('cleanup') {
-							// this only will publish if the incominh branch IS develop
+							// this only will publish if the incoming branch IS develop
 							Branch.publish_to_master(this)
 							Pipeline.cleanup(this)
 					}
