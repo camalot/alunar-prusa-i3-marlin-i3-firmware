@@ -68,7 +68,8 @@ arduino-builder \
 	-fqbn ${BOARD_ID} \
 	-build-path '${WORKSPACE}/build' \
 	'${INO_PATH}';
-mv ${WORKSPACE}/build/${INO_FILE}.hex ${WORKSPACE}/dist/${ProjectName}.hex
+mv ${WORKSPACE}/build/${INO_FILE}.hex ${WORKSPACE}/dist/${ProjectName}-${CI_BUILD_VERSION}.hex
+mv ${WORKSPACE}/build/${INO_FILE}.with_bootloader.hex ${WORKSPACE}/dist/${ProjectName}-${CI_BUILD_VERSION}-with_bootloader.hex
 ls -lFa ${WORKSPACE}/dist;
 """
 					}
@@ -77,7 +78,7 @@ ls -lFa ${WORKSPACE}/dist;
 					stage ("package") {
 						sh script: """#!/usr/bin/env bash
 cd ${WORKSPACE}/dist;
-zip -r "${CI_PROJECT_NAME}.zip" ${CI_PROJECT_NAME}.hex;
+zip -r "${CI_PROJECT_NAME}.zip" ${ProjectName}-*.hex;
 cd ${WORKSPACE};
 """
 					}
