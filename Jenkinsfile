@@ -67,18 +67,25 @@ arduino-builder \
 	-tools /arduino/tools-builder \
 	-libraries /arduino/libraries \
 	-fqbn ${BOARD_ID} \
-	-build-path '${WORKSPACE}/dist' \
+	-build-path '${WORKSPACE}/build' \
 	'${INO_PATH}';
-mv ${WORKSPACE}/dist/${INO_FILE}.hex ${WORKSPACE}/dist/${ProjectName}.hex
+mv ${WORKSPACE}/build/${INO_FILE}.hex ${WORKSPACE}/dist/${ProjectName}.hex
 ls -lFa ${WORKSPACE}/dist;
 """
 						// sh script: "${WORKSPACE}/.deploy/build.sh -n '${ProjectName}' -v '${env.CI_BUILD_VERSION}'";
 					}
 					stage ("test") {
 					}
+					stage ("package") {
+						sh script: """#!/usr/bin/env bash
+cd ${WORKSPACE}/dist;
+zip -r "${CI_PROJECT_NAME}.zip" ${CI_PROJECT_NAME}.hex;
+cd ${WORKSPACE};
+"""
+					}
 					stage ("deploy") {
 							// sh script: "${WORKSPACE}/.deploy/deploy.sh -n '${ProjectName}' -v '${env.CI_BUILD_VERSION}'"
-							Pipeline.publish_artifact(this, "${WORKSPACE}/dist/${ProjectName}.hex", "generic-local/arduino/${ProjectName}/${env.CI_BUILD_VERSION}/${ProjectName}-${env.CI_BUILD_VERSION}.hex")
+							Pipeline.publish_artifact(this, "${WORKSPACE}/dist/*.zip", "generic-local/arduino/${ProjectName}/${env.CI_BUILD_VERSION}/${ProjectName}-${env.CI_BUILD_VERSION}.zip")
 					}
 					stage ('cleanup') {
 							// this only will publish if the incoming branch IS develop
