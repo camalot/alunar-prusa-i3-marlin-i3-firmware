@@ -18,7 +18,8 @@ if(env.BRANCH_NAME ==~ /master$/) {
 node ("arduino") {
 	def ProjectName = "alunar-prusa-i3-marlin-i3-firmware"
 	def BOARD_ID = "arduino:avr:mega:cpu=atmega2560"
-	def INO_PATH = "${WORKSPACE}/Marlin_I3/Marlin_I3.ino"
+	def INO_FILE = "Marlin_I3.ino"
+	def INO_PATH = "${WORKSPACE}/Marlin_I3/${INO_FILE}"
 
 	def slack_notify_channel = null
 
@@ -68,19 +69,16 @@ arduino-builder \
 	-fqbn ${BOARD_ID} \
 	-build-path '${WORKSPACE}/dist' \
 	'${INO_PATH}';
-
-pushd .;
-zip --verbose ${ProjectName}-${CI_BUILD_VERSION}.zip -xi ./*.hex
+mv ${WORKSPACE}/dist/${INO_FILE}.hex ${WORKSPACE}/dist/${ProjectName}.hex
 ls -lFa ${WORKSPACE}/dist;
-popd;"""
+"""
 						// sh script: "${WORKSPACE}/.deploy/build.sh -n '${ProjectName}' -v '${env.CI_BUILD_VERSION}'";
 					}
 					stage ("test") {
 					}
 					stage ("deploy") {
 							// sh script: "${WORKSPACE}/.deploy/deploy.sh -n '${ProjectName}' -v '${env.CI_BUILD_VERSION}'"
-							Pipeline.publish_artifact(this, "${WORKSPACE}/dist/Marlin_I3.ino.hex", "generic-local/arduino/${ProjectName}/${env.CI_BUILD_VERSION}/${ProjectName}-${env.CI_BUILD_VERSION}.hex")
-							Pipeline.publish_artifact(this, "${WORKSPACE}/dist/Marlin_I3.ino.with_bootloader.hex", "generic-local/arduino/${ProjectName}/${env.CI_BUILD_VERSION}/${ProjectName}-${env.CI_BUILD_VERSION}.with_bootloader.hex")
+							Pipeline.publish_artifact(this, "${WORKSPACE}/dist/${ProjectName}.hex", "generic-local/arduino/${ProjectName}/${env.CI_BUILD_VERSION}/${ProjectName}-${env.CI_BUILD_VERSION}.hex")
 					}
 					stage ('cleanup') {
 							// this only will publish if the incoming branch IS develop
