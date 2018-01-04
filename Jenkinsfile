@@ -69,7 +69,7 @@ library-manager --name="LiquidCrystal_I2C" --version="latest";
 						// 	-build-path '${WORKSPACE}/dist' \
 						// 	'${INO_PATH}';
 						// ls -lFa ${WORKSPACE}/dist;"""
-						sh script "${WORKSPACE}/.deploy/build.sh -n '${ProjectName}' -v '${env.CI_BUILD_VERSION}'";
+						sh script: "${WORKSPACE}/.deploy/build.sh -n '${ProjectName}' -v '${env.CI_BUILD_VERSION}'";
 					}
 					stage ("test") {
 					}
