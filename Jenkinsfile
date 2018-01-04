@@ -29,7 +29,7 @@ node ("arduino") {
 
 	env.PROJECT_MAJOR_VERSION = MAJOR_VERSION
 	env.PROJECT_MINOR_VERSION = MINOR_VERSION
-	
+	env.CI_PROJECT_NAME = ProjectName
 	env.CI_BUILD_VERSION = Branch.getSemanticVersion(this)
 	env.CI_DOCKER_ORGANIZATION = Accounts.GIT_ORGANIZATION
 	currentBuild.result = "SUCCESS"
@@ -70,7 +70,7 @@ arduino-builder \
 	'${INO_PATH}';
 
 pushd .;
-zip --verbose ${CI_PROJECT_NAME}-${CI_BUILD_VERSION}.zip -xi ./*.hex
+zip --verbose ${ProjectName}-${CI_BUILD_VERSION}.zip -xi ./*.hex
 ls -lFa ${WORKSPACE}/dist;
 popd;"""
 						// sh script: "${WORKSPACE}/.deploy/build.sh -n '${ProjectName}' -v '${env.CI_BUILD_VERSION}'";
