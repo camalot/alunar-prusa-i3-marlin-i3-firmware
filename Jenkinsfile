@@ -56,8 +56,7 @@ library-manager --name="LiquidCrystal_I2C" --version="latest";
 						sh script: """#!/usr/bin/env bash
 set -e;
 mkdir -p ${WORKSPACE}/dist;
-# temp full path
-
+mkdir -p ${WORKSPACE}/build;
 arduino-builder \
 	--compile \
 	-verbose \
@@ -72,7 +71,6 @@ arduino-builder \
 mv ${WORKSPACE}/build/${INO_FILE}.hex ${WORKSPACE}/dist/${ProjectName}.hex
 ls -lFa ${WORKSPACE}/dist;
 """
-						// sh script: "${WORKSPACE}/.deploy/build.sh -n '${ProjectName}' -v '${env.CI_BUILD_VERSION}'";
 					}
 					stage ("test") {
 					}
