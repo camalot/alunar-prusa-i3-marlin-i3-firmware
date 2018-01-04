@@ -52,28 +52,31 @@ library-manager --name="LiquidCrystal_I2C" --version="latest";
 					}
 					stage ("build") {
 						echo "in build..."
-						sh script: """#!/usr/bin/env bash
-						set -e;
-						mkdir -p ${WORKSPACE}/dist;
-						# temp full path
+						// sh script: """#!/usr/bin/env bash
+						// set -e;
+						// mkdir -p ${WORKSPACE}/dist;
+						// # temp full path
 
-						arduino-builder \
-							--compile \
-							-verbose \
-							-warnings more \
-							-hardware /arduino/hardware \
-							-tools /arduino/hardware/tools \
-							-tools /arduino/tools-builder \
-							-libraries /arduino/libraries \
-							-fqbn ${BOARD_ID} \
-							-build-path '${WORKSPACE}/dist' \
-							'${INO_PATH}';
-						ls -lFa ${WORKSPACE}/dist;"""
+						// arduino-builder \
+						// 	--compile \
+						// 	-verbose \
+						// 	-warnings more \
+						// 	-hardware /arduino/hardware \
+						// 	-tools /arduino/hardware/tools \
+						// 	-tools /arduino/tools-builder \
+						// 	-libraries /arduino/libraries \
+						// 	-fqbn ${BOARD_ID} \
+						// 	-build-path '${WORKSPACE}/dist' \
+						// 	'${INO_PATH}';
+						// ls -lFa ${WORKSPACE}/dist;"""
+						sh script "${WORKSPACE}/.deploy/build.sh -n '${ProjectName}' -v '${env.CI_BUILD_VERSION}'";
 					}
 					stage ("test") {
 					}
 					stage ("deploy") {
 							// sh script: "${WORKSPACE}/.deploy/deploy.sh -n '${ProjectName}' -v '${env.CI_BUILD_VERSION}'"
+							Pipeline.publish_artifact(this, "${WORKSPACE}/dist/Marlin_I3.ino.hex", "generic-local/arduino/${ProjectName}/${env.CI_BUILD_VERSION}/${ProjectName}-${env.CI_BUILD_VERSION}.hex")
+							Pipeline.publish_artifact(this, "${WORKSPACE}/dist/Marlin_I3.ino.with_bootloader.hex", "generic-local/arduino/${ProjectName}/${env.CI_BUILD_VERSION}/${ProjectName}-${env.CI_BUILD_VERSION}.with_bootloader.hex")
 					}
 					stage ('cleanup') {
 							// this only will publish if the incoming branch IS develop

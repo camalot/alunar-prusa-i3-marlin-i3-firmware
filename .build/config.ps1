@@ -1,3 +1,0 @@
-@{
-	ArduinoPath = "D:\Applications\Arduino\"
-}
