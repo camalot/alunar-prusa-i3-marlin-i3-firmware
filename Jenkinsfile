@@ -33,6 +33,7 @@ node ("arduino") {
 	env.CI_PROJECT_NAME = ProjectName
 	env.CI_BUILD_VERSION = Branch.getSemanticVersion(this)
 	env.CI_DOCKER_ORGANIZATION = Accounts.GIT_ORGANIZATION
+
 	currentBuild.result = "SUCCESS"
 	def errorMessage = null
 
@@ -47,20 +48,25 @@ node ("arduino") {
 							Pipeline.install(this)
 
 							sh script: """#!/usr/bin/env bash
-library-manager --name="LiquidCrystal" --version="latest";
-library-manager --name="LiquidCrystal_I2C" --version="latest";
+# library-manager --name="LiquidCrystal" --version="latest";
+# library-manager --name="LiquidCrystal_I2C" --version="latest";
+mkdir -p "${WORKSPACE}/dist";
+mkdir -p "${WORKSPACE}/build";
+
 """
 					}
 					stage ("build") {
-						echo "in build..."
 						sh script: """#!/usr/bin/env bash
 set -e;
-mkdir -p ${WORKSPACE}/dist;
-mkdir -p ${WORKSPACE}/build;
+
+echo "#define USE_JENKINS_VERSIONING" >> '${WORKSPACE}/Marlin_I3/Configuration_Alunar.h';
+sed -i 's|{{CI_BUILD_VERSION}}|${CI_BUILD_VERSION}|g' '${WORKSPACE}/Marlin_I3/Configuration_Alunar.h'
+cat ${WORKSPACE}/Marlin_I3/Configuration_Alunar.h;
+
 arduino-builder \
 	--compile \
 	-verbose \
-	-warnings more \
+	-warnings default \
 	-hardware /arduino/hardware \
 	-tools /arduino/hardware/tools \
 	-tools /arduino/tools-builder \
@@ -78,13 +84,21 @@ ls -lFa ${WORKSPACE}/dist;
 					stage ("package") {
 						sh script: """#!/usr/bin/env bash
 cd ${WORKSPACE}/dist;
-zip -r "${CI_PROJECT_NAME}.zip" ${ProjectName}-*.hex;
+zip -r "${CI_PROJECT_NAME}-${env.CI_BUILD_VERSION}.zip" ${ProjectName}-*.hex;
 cd ${WORKSPACE};
 """
 					}
 					stage ("deploy") {
 							// sh script: "${WORKSPACE}/.deploy/deploy.sh -n '${ProjectName}' -v '${env.CI_BUILD_VERSION}'"
 							Pipeline.publish_artifact(this, "${WORKSPACE}/dist/*.zip", "generic-local/arduino/${ProjectName}/${env.CI_BUILD_VERSION}/${ProjectName}-${env.CI_BUILD_VERSION}.zip")
+							if ( Branch.isDevelopBranch(this) ) {
+								withCredentials([[$class: 'StringBinding', credentialsId: env.CI_GITHUB_TOKEN_CREDENTIAL_ID,
+															variable: 'GITHUB_ACCESS_TOKEN']]) {
+									sh script: """#!/usr/bin/env bash
+github-release github_api_token="${GITHUB_ACCESS_TOKEN}" owner="camalot" repo="${ProjectName}" tag="v${env.CI_BUILD_VERSION}" filename="${WORKSPACE}/dist/${CI_PROJECT_NAME}-${env.CI_BUILD_VERSION}.zip"
+"""
+								}
+							}
 					}
 					stage ('cleanup') {
 							// this only will publish if the incoming branch IS develop
@@ -93,7 +107,7 @@ cd ${WORKSPACE};
 					}
 			} catch(err) {
 				currentBuild.result = "FAILURE"
-				errorMessage = err.message
+				errorMessage = err.toString()
 				throw err
 			}
 			finally {
