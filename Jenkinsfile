@@ -96,7 +96,13 @@ cd ${WORKSPACE};
 								withCredentials([[$class: 'StringBinding', credentialsId: env.CI_GITHUB_TOKEN_CREDENTIAL_ID,
 															variable: 'GITHUB_ACCESS_TOKEN']]) {
 									sh script: """#!/usr/bin/env bash
-github-release github_api_token="${GITHUB_ACCESS_TOKEN}" owner="camalot" repo="${ProjectName}" tag="v${env.CI_BUILD_VERSION}" filename="${WORKSPACE}/dist/${CI_PROJECT_NAME}-${env.CI_BUILD_VERSION}.zip"
+set -e;
+github-release \
+	--token="${GITHUB_ACCESS_TOKEN}" \
+	--owner="camalot" \
+	--repo="${ProjectName}" \
+	--tag="v${env.CI_BUILD_VERSION}" \
+	--filename="${WORKSPACE}/dist/${CI_PROJECT_NAME}-${env.CI_BUILD_VERSION}.zip";
 """
 								}
 							}
