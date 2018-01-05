@@ -84,13 +84,21 @@ ls -lFa ${WORKSPACE}/dist;
 					stage ("package") {
 						sh script: """#!/usr/bin/env bash
 cd ${WORKSPACE}/dist;
-zip -r "${CI_PROJECT_NAME}.zip" ${ProjectName}-*.hex;
+zip -r "${CI_PROJECT_NAME}-${env.CI_BUILD_VERSION}.zip" ${ProjectName}-*.hex;
 cd ${WORKSPACE};
 """
 					}
 					stage ("deploy") {
 							// sh script: "${WORKSPACE}/.deploy/deploy.sh -n '${ProjectName}' -v '${env.CI_BUILD_VERSION}'"
 							Pipeline.publish_artifact(this, "${WORKSPACE}/dist/*.zip", "generic-local/arduino/${ProjectName}/${env.CI_BUILD_VERSION}/${ProjectName}-${env.CI_BUILD_VERSION}.zip")
+							if ( Branch.isDevelopBranch(this) ) {
+								withCredentials([[$class: 'StringBinding', credentialsId: env.CI_GITHUB_TOKEN_CREDENTIAL_ID,
+															variable: 'GITHUB_ACCESS_TOKEN']]) {
+									sh script: """#!/usr/bin/env bash
+github-release github_api_token="${GITHUB_ACCESS_TOKEN}" owner="camalot" repo="${ProjectName}" tag="v${env.CI_BUILD_VERSION}" filename="${WORKSPACE}/dist/${CI_PROJECT_NAME}-${env.CI_BUILD_VERSION}.zip"
+"""
+								}
+							}
 					}
 					stage ('cleanup') {
 							// this only will publish if the incoming branch IS develop
