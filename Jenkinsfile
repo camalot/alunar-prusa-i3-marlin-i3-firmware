@@ -49,18 +49,19 @@ node ("arduino") {
 							sh script: """#!/usr/bin/env bash
 library-manager --name="LiquidCrystal" --version="latest";
 library-manager --name="LiquidCrystal_I2C" --version="latest";
+mkdir -p "${WORKSPACE}/dist";
+mkdir -p "${WORKSPACE}/build";
+
 """
 					}
 					stage ("build") {
 						sh script: """#!/usr/bin/env bash
 set -e;
-mkdir -p ${WORKSPACE}/dist;
-mkdir -p ${WORKSPACE}/build;
 
 build_date=$(date +%F-%T-%Z);
 echo "#define USE_JENKINS_VERSIONING" >> '${WORKSPACE}/Marlin_I3/Configuration_Alunar.h';
-sed -i 's|\{\{CI_BUILD_VERSION\}\}|${CI_BUILD_VERSION}|g' '${WORKSPACE}/Marlin_I3/Configuration_Alunar.h'
-sed -i 's|\{\{CI_BUILD_DATE\}\}|${build_date}|g' '${WORKSPACE}/Marlin_I3/Configuration_Alunar.h'
+sed -i 's|{{CI_BUILD_VERSION}}|${CI_BUILD_VERSION}|g' '${WORKSPACE}/Marlin_I3/Configuration_Alunar.h'
+sed -i 's|{{CI_BUILD_DATE}}|\${build_date}|g' '${WORKSPACE}/Marlin_I3/Configuration_Alunar.h'
 cat ${WORKSPACE}/Marlin_I3/Configuration_Alunar.h;
 
 arduino-builder \
