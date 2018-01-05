@@ -102,7 +102,8 @@ github-release \
 	--owner="camalot" \
 	--repo="${ProjectName}" \
 	--tag="v${env.CI_BUILD_VERSION}" \
-	--filename="${WORKSPACE}/dist/${CI_PROJECT_NAME}-${env.CI_BUILD_VERSION}.zip";
+	--filename="${WORKSPACE}/dist/${CI_PROJECT_NAME}-${env.CI_BUILD_VERSION}.zip" \
+	--draft;
 """
 								}
 							}
