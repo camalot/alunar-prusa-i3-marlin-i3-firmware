@@ -91,6 +91,7 @@ cd ${WORKSPACE};
 					stage ("deploy") {
 							// sh script: "${WORKSPACE}/.deploy/deploy.sh -n '${ProjectName}' -v '${env.CI_BUILD_VERSION}'"
 							Pipeline.publish_artifact(this, "${WORKSPACE}/dist/*.zip", "generic-local/arduino/${ProjectName}/${env.CI_BUILD_VERSION}/${ProjectName}-${env.CI_BUILD_VERSION}.zip")
+							Branch.publish_to_master(this)
 							if ( Branch.isDevelopBranch(this) ) {
 								withCredentials([[$class: 'StringBinding', credentialsId: env.CI_GITHUB_TOKEN_CREDENTIAL_ID,
 															variable: 'GITHUB_ACCESS_TOKEN']]) {
@@ -102,7 +103,6 @@ github-release github_api_token="${GITHUB_ACCESS_TOKEN}" owner="camalot" repo="$
 					}
 					stage ('cleanup') {
 							// this only will publish if the incoming branch IS develop
-							Branch.publish_to_master(this)
 							Pipeline.cleanup(this)
 					}
 			} catch(err) {
