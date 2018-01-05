@@ -61,13 +61,13 @@ set -e;
 build_date=\$(date +%F-%T-%Z);
 echo "#define USE_JENKINS_VERSIONING" >> '${WORKSPACE}/Marlin_I3/Configuration_Alunar.h';
 sed -i 's|{{CI_BUILD_VERSION}}|${CI_BUILD_VERSION}|g' '${WORKSPACE}/Marlin_I3/Configuration_Alunar.h'
-sed -i 's|{{CI_BUILD_DATE}}|\${build_date}|g' '${WORKSPACE}/Marlin_I3/Configuration_Alunar.h'
+sed -i 's|{{CI_BUILD_DATE}}|${build_date}|g' '${WORKSPACE}/Marlin_I3/Configuration_Alunar.h'
 cat ${WORKSPACE}/Marlin_I3/Configuration_Alunar.h;
 
 arduino-builder \
 	--compile \
 	-verbose \
-	-warnings more \
+	-warnings default \
 	-hardware /arduino/hardware \
 	-tools /arduino/hardware/tools \
 	-tools /arduino/tools-builder \
