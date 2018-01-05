@@ -33,6 +33,7 @@ node ("arduino") {
 	env.CI_PROJECT_NAME = ProjectName
 	env.CI_BUILD_VERSION = Branch.getSemanticVersion(this)
 	env.CI_DOCKER_ORGANIZATION = Accounts.GIT_ORGANIZATION
+
 	currentBuild.result = "SUCCESS"
 	def errorMessage = null
 
@@ -47,8 +48,8 @@ node ("arduino") {
 							Pipeline.install(this)
 
 							sh script: """#!/usr/bin/env bash
-library-manager --name="LiquidCrystal" --version="latest";
-library-manager --name="LiquidCrystal_I2C" --version="latest";
+# library-manager --name="LiquidCrystal" --version="latest";
+# library-manager --name="LiquidCrystal_I2C" --version="latest";
 mkdir -p "${WORKSPACE}/dist";
 mkdir -p "${WORKSPACE}/build";
 
@@ -60,7 +61,6 @@ set -e;
 
 echo "#define USE_JENKINS_VERSIONING" >> '${WORKSPACE}/Marlin_I3/Configuration_Alunar.h';
 sed -i 's|{{CI_BUILD_VERSION}}|${CI_BUILD_VERSION}|g' '${WORKSPACE}/Marlin_I3/Configuration_Alunar.h'
-sed -i 's|{{CI_BUILD_DATE}}|`date +%F-%T-%Z`|g' '${WORKSPACE}/Marlin_I3/Configuration_Alunar.h'
 cat ${WORKSPACE}/Marlin_I3/Configuration_Alunar.h;
 
 arduino-builder \
