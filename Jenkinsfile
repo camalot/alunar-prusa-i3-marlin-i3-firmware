@@ -19,7 +19,7 @@ node ("arduino") {
 	def ProjectName = "alunar-prusa-i3-marlin-i3-firmware"
 	def BOARD_ID = "arduino:avr:mega:cpu=atmega2560"
 	def INO_FILE = "Marlin_I3.ino"
-	def INO_PATH = "${WORKSPACE}/Marlin_I3/${INO_FILE}"
+	def INO_PATH = "Marlin_I3"
 
 	def slack_notify_channel = null
 
@@ -42,76 +42,34 @@ node ("arduino") {
 		wrap([$class: 'AnsiColorBuildWrapper', colorMapName: 'xterm']) {
 			Notify.slack(this, "STARTED", null, slack_notify_channel)
 			try {
-					stage ("install" ) {
-							deleteDir()
-							Branch.checkout(this, ProjectName)
-							Pipeline.install(this)
-
-							sh script: """#!/usr/bin/env bash
-# library-manager --name="LiquidCrystal" --version="latest";
-# library-manager --name="LiquidCrystal_I2C" --version="latest";
-mkdir -p "${WORKSPACE}/dist";
-mkdir -p "${WORKSPACE}/build";
-
-"""
-					}
-					stage ("build") {
-						sh script: """#!/usr/bin/env bash
-set -e;
-
-echo "#define USE_JENKINS_VERSIONING" >> '${WORKSPACE}/Marlin_I3/Configuration_Alunar.h';
-sed -i 's|{{CI_BUILD_VERSION}}|${CI_BUILD_VERSION}|g' '${WORKSPACE}/Marlin_I3/Configuration_Alunar.h'
-cat ${WORKSPACE}/Marlin_I3/Configuration_Alunar.h;
-
-arduino-builder \
-	--compile \
-	-verbose \
-	-warnings default \
-	-hardware /arduino/hardware \
-	-tools /arduino/hardware/tools \
-	-tools /arduino/tools-builder \
-	-libraries /arduino/libraries \
-	-fqbn ${BOARD_ID} \
-	-build-path '${WORKSPACE}/build' \
-	'${INO_PATH}';
-mv ${WORKSPACE}/build/${INO_FILE}.hex ${WORKSPACE}/dist/${ProjectName}-${CI_BUILD_VERSION}.hex
-mv ${WORKSPACE}/build/${INO_FILE}.with_bootloader.hex ${WORKSPACE}/dist/${ProjectName}-${CI_BUILD_VERSION}-with_bootloader.hex
-ls -lFa ${WORKSPACE}/dist;
-"""
-					}
-					stage ("test") {
-					}
-					stage ("package") {
-						sh script: """#!/usr/bin/env bash
-cd ${WORKSPACE}/dist;
-zip -r "${CI_PROJECT_NAME}-${env.CI_BUILD_VERSION}.zip" ${ProjectName}-*.hex;
-cd ${WORKSPACE};
-"""
-					}
-					stage ("deploy") {
-							// sh script: "${WORKSPACE}/.deploy/deploy.sh -n '${ProjectName}' -v '${env.CI_BUILD_VERSION}'"
-							Pipeline.publish_artifact(this, "${WORKSPACE}/dist/*.zip", "generic-local/arduino/${ProjectName}/${env.CI_BUILD_VERSION}/${ProjectName}-${env.CI_BUILD_VERSION}.zip")
-							Branch.publish_to_master(this)
-							if ( Branch.isDevelopBranch(this) ) {
-								withCredentials([[$class: 'StringBinding', credentialsId: env.CI_GITHUB_TOKEN_CREDENTIAL_ID,
-															variable: 'GITHUB_ACCESS_TOKEN']]) {
-									sh script: """#!/usr/bin/env bash
-set -e;
-github-release \
-	--token="${GITHUB_ACCESS_TOKEN}" \
-	--owner="camalot" \
-	--repo="${ProjectName}" \
-	--tag="v${env.CI_BUILD_VERSION}" \
-	--filename="${WORKSPACE}/dist/${CI_PROJECT_NAME}-${env.CI_BUILD_VERSION}.zip" \
-	--draft;
-"""
-								}
-							}
-					}
-					stage ('cleanup') {
-							// this only will publish if the incoming branch IS develop
-							Pipeline.cleanup(this)
-					}
+				stage ("install" ) {
+					deleteDir()
+					Branch.checkout(this, ProjectName)
+					Pipeline.install(this)
+					sh script: "${WORKSPACE}/.deploy/prep.sh";
+				}
+				stage ("build") {
+					sh script: "${WORKSPACE}/.deploy/build.sh --ino-file=\"${INO_FILE}\" --ino-path=\"${INO_PATH}\" --board=\"${BOARD_ID}\"" 
+				}
+				stage ("test") {
+				}
+				stage ("package") {
+					sh script: "${WORKSPACE}/.deploy/package.sh";
+				}
+				stage ("deploy") {
+					// sh script: "${WORKSPACE}/.deploy/deploy.sh -n '${ProjectName}' -v '${env.CI_BUILD_VERSION}'"
+					// this only will publish if the incoming branch IS develop
+					Pipeline.publish_artifact(this, "${WORKSPACE}/dist/*.zip", "generic-local/arduino/${ProjectName}/${env.CI_BUILD_VERSION}/${ProjectName}-${env.CI_BUILD_VERSION}.zip")
+					// this only will publish if the incoming branch IS develop
+					Branch.publish_to_master(this)
+					// after pushing to master, publish release
+					// this will only run on develop branch
+					Pipeline.publish_github(this, "camalot", ProjectName, "v${env.CI_BUILD_VERSION}", 
+							"${WORKSPACE}/dist/${CI_PROJECT_NAME}-${env.CI_BUILD_VERSION}.zip", true, false )
+				}
+				stage ('cleanup') {
+					Pipeline.cleanup(this)
+				}
 			} catch(err) {
 				currentBuild.result = "FAILURE"
 				errorMessage = err.toString()
