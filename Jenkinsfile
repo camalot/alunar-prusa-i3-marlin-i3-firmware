@@ -58,10 +58,9 @@ mkdir -p "${WORKSPACE}/build";
 						sh script: """#!/usr/bin/env bash
 set -e;
 
-build_date=\$(date +%F-%T-%Z);
 echo "#define USE_JENKINS_VERSIONING" >> '${WORKSPACE}/Marlin_I3/Configuration_Alunar.h';
 sed -i 's|{{CI_BUILD_VERSION}}|${CI_BUILD_VERSION}|g' '${WORKSPACE}/Marlin_I3/Configuration_Alunar.h'
-sed -i 's|{{CI_BUILD_DATE}}|${build_date}|g' '${WORKSPACE}/Marlin_I3/Configuration_Alunar.h'
+sed -i 's|{{CI_BUILD_DATE}}|`date +%F-%T-%Z`|g' '${WORKSPACE}/Marlin_I3/Configuration_Alunar.h'
 cat ${WORKSPACE}/Marlin_I3/Configuration_Alunar.h;
 
 arduino-builder \
