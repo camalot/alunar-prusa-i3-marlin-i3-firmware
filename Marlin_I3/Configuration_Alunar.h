@@ -2,13 +2,26 @@
 
 #define STRING_CONFIG_H_AUTHOR "@camalot (Ryan Conrad)" // Who made the changes.
 #define SHOW_BOOTSCREEN
-#define STRING_SPLASH_LINE1 SHORT_BUILD_VERSION // will be shown during bootup in line 1
+#define STRING_SPLASH_LINE1 DETAILED_BUILD_VERSION // will be shown during bootup in line 1
 #define STRING_SPLASH_LINE2 WEBSITE_URL         // will be shown during bootup in line 2
 
+/**
+   * Verbose version identifier which should contain a reference to the location
+   * from where the binary was downloaded or the source code was compiled.
+   */
+#if ENABLED(USE_JENKINS_VERSIONING)
+	#define DETAILED_BUILD_VERSION "[M" SHORT_BUILD_VERSION "] [{{CI_BUILD_VERSION}}]"
+	#define STRING_DISTRIBUTION_DATE "{{CI_BUILD_DATE}}"
+#else
+	#define DETAILED_BUILD_VERSION SHORT_BUILD_VERSION
+	#define STRING_DISTRIBUTION_DATE "2017-12-25 12:00"
+#endif
 
 // Optional custom name for your RepStrap or other custom machine
 // Displayed in the LCD "Ready" message
-#define CUSTOM_MACHINE_NAME "Ragnos"
+#define CUSTOM_MACHINE_NAME "3D Printer"
+#define MACHINE_NAME "3D Printer"
+#define SOURCE_CODE_URL "https://github.com/camalot/alunar-prusa-i3-marlin-i3-firmware"
 
 // Define this to set a unique identifier for this printer, (Used by some programs to differentiate between machines)
 // You can use an online service to generate a random UUID. (eg http://www.uuidgenerator.net/version4)

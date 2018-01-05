@@ -52,11 +52,16 @@ library-manager --name="LiquidCrystal_I2C" --version="latest";
 """
 					}
 					stage ("build") {
-						echo "in build..."
 						sh script: """#!/usr/bin/env bash
 set -e;
 mkdir -p ${WORKSPACE}/dist;
 mkdir -p ${WORKSPACE}/build;
+
+build_date=$(date +%F-%T-%Z);
+echo "#define USE_JENKINS_VERSIONING" >> '${WORKSPACE}/Marlin_I3/Configuration_Alunar.h';
+sed -i 's|{{CI_BUILD_VERSION}}|${CI_BUILD_VERSION}|g' '${WORKSPACE}/Marlin_I3/Configuration_Alunar.h'
+sed -i 's|{{CI_BUILD_DATE}}|${build_date}|g' '${WORKSPACE}/Marlin_I3/Configuration_Alunar.h'
+
 arduino-builder \
 	--compile \
 	-verbose \
@@ -93,7 +98,7 @@ cd ${WORKSPACE};
 					}
 			} catch(err) {
 				currentBuild.result = "FAILURE"
-				errorMessage = err.message
+				errorMessage = err.toString()
 				throw err
 			}
 			finally {
