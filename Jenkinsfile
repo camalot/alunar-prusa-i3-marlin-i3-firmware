@@ -52,6 +52,7 @@ node ("arduino") {
 					sh script: "${WORKSPACE}/.deploy/build.sh --ino-file=\"${INO_FILE}\" --ino-path=\"${INO_PATH}\" --board=\"${BOARD_ID}\"" 
 				}
 				stage ("test") {
+					sh script: "${WORKSPACE}/.deploy/test.sh --hex="${WORKSPACE}/dist/${CI_PROJECT_NAME}-${CI_BUILD_VERSION}.hex"" 
 				}
 				stage ("package") {
 					sh script: "${WORKSPACE}/.deploy/package.sh";
