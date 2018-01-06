@@ -19,6 +19,6 @@ done
 
 cat /usr/local/etc/avrdude.conf
 
-avrdude -p m2560 -c avrispmkII -n -P /dev/ttyACM0 -C /usr/local/etc/avrdude.conf -U flash:w:${opt_hex}
+avrdude -p m2560 -c avrispmkII -P /dev/ttyACM0 -C /usr/local/etc/avrdude.conf -U flash:w:${opt_hex}
 
-avrdude -p m2560 -c avrispmkII -n -P /dev/ttyACM0 -C /usr/local/etc/avrdude.conf -U flash:v:${opt_hex}
+avrdude -p m2560 -c avrispmkII -P /dev/ttyACM0 -C /usr/local/etc/avrdude.conf -U flash:v:${opt_hex}
