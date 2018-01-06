@@ -62,7 +62,7 @@ node ("arduino") {
 					//Pipeline.publish_artifact(this, "${WORKSPACE}/dist/*.zip", "generic-local/arduino/${ProjectName}/${env.CI_BUILD_VERSION}/${ProjectName}-${env.CI_BUILD_VERSION}.zip")
 					// this only will publish if the incoming branch IS develop
 					Branch.publish_to_master(this)
-					Publish.upload_artifact(this, "${WORKSPACE}/dist/*.zip", "generic-local/arduino/${ProjectName}/${env.CI_BUILD_VERSION}/${ProjectName}-${env.CI_BUILD_VERSION}.zip")
+					Pipeline.upload_artifact(this, "${WORKSPACE}/dist/*.zip", "generic-local/arduino/${ProjectName}/${env.CI_BUILD_VERSION}/${ProjectName}-${env.CI_BUILD_VERSION}.zip")
 					Pipeline.publish_buildInfo(this)
 					// after pushing to master, publish release
 					// this will only run on develop branch
