@@ -7,7 +7,7 @@ for i in "$@"; do
 			opt_ino_file="${i#*=}";
 			shift # past argument=value
 		;;
-		-ip=*|--ino-path=*)
+		-ip=*|--ino-filepath=*)
 			opt_ino_path="${i#*=}";
 			shift # past argument=value
 		;;
@@ -22,11 +22,15 @@ for i in "$@"; do
 	esac
 done
 
+[[ -z "${opt_ino_file}" ]] && (>&2 echo "Missing --ino-file param") && exit 1;
+[[ -z "${opt_ino_path}" ]] && (>&2 echo "Missing --ino-file param") && exit 1;
+[[ -z "${opt_board}" ]] && (>&2 echo "Missing --board param") && exit 1;
+
 mkdir -p "${WORKSPACE}/build";
 mkdir -p "${WORKSPACE}/dist";
 
-echo "#define USE_JENKINS_VERSIONING" >> "${WORKSPACE}/${opt_ino_path}/Configuration_Alunar.h";
-sed -i 's|{{CI_BUILD_VERSION}}|${CI_BUILD_VERSION}|g' "${WORKSPACE}/${opt_ino_path}/Configuration_Alunar.h"
+echo "#define USE_JENKINS_VERSIONING" >> "${WORKSPACE}/${INO_PATH}/Configuration_Alunar.h";
+sed -i 's|{{CI_BUILD_VERSION}}|${CI_BUILD_VERSION}|g' "${WORKSPACE}/${INO_PATH}/Configuration_Alunar.h"
 
 arduino-builder \
 	--compile \
@@ -38,6 +42,6 @@ arduino-builder \
 	-libraries /arduino/libraries \
 	-fqbn ${BOARD_ID} \
 	-build-path "${WORKSPACE}/build" \
-	"${WORKSPACE}/${opt_ino_path}/${opt_ino_file}";
+	"${WORKSPACE}/${INO_PATH}/${opt_ino_file}";
 mv ${WORKSPACE}/build/${opt_ino_file}.hex ${WORKSPACE}/dist/${CI_PROJECT_NAME}-${CI_BUILD_VERSION}.hex
 mv ${WORKSPACE}/build/${opt_ino_file}.with_bootloader.hex ${WORKSPACE}/dist/${CI_PROJECT_NAME}-${CI_BUILD_VERSION}-with_bootloader.hex
