@@ -63,7 +63,7 @@ node ("arduino") {
 				stage ("deploy") {
 					if ( Branch.isDevelopBranch(this) ) {
 						Pipeline.publish_github(this, "camalot", ProjectName, "v${env.CI_BUILD_VERSION}", 
-								"${WORKSPACE}/dist/${CI_PROJECT_NAME}-${env.CI_BUILD_VERSION}.zip", true, false )
+								"${WORKSPACE}/dist/${CI_PROJECT_NAME}-${env.CI_BUILD_VERSION}.zip", false, false )
 
 					}
 					Branch.publish_to_master(this)
