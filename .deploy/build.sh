@@ -7,7 +7,7 @@ for i in "$@"; do
 			opt_ino_file="${i#*=}";
 			shift # past argument=value
 		;;
-		-ip=*|--ino-filepath=*)
+		-ip=*|--ino-path=*)
 			opt_ino_path="${i#*=}";
 			shift # past argument=value
 		;;
