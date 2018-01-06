@@ -18,8 +18,8 @@ if(env.BRANCH_NAME ==~ /master$/) {
 node ("arduino") {
 	def ProjectName = "alunar-prusa-i3-marlin-i3-firmware"
 	def BOARD_ID = "arduino:avr:mega:cpu=atmega2560"
-	def INO_FILE = "Marlin_I3.ino"
-	def INO_PATH = "Marlin_I3"
+	def INO_FILE = "Marlin.ino"
+	def INO_PATH = "Marlin"
 
 	def slack_notify_channel = null
 

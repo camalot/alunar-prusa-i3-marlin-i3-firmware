@@ -23,7 +23,7 @@ $ avrdude -p m2560 -c avrispmkII -P /dev/ttyACM0 -C /<arduino-dir>/hardware/tool
 1. Clone / Download this repository
 1. Connect USB from Mainboard to PC
 1. Open Arduino
-1. Open `Marlin\_I3/Marlin_I3.ino`
+1. Open `Marlin/Marlin.ino`
 1. Set board under `Tools` menu to `Arduino Mega 2560 or Mega ADK`
 1. Choose USB serial port
 1. Upload firmware to board `File -> Upload (CTRL+U)`
