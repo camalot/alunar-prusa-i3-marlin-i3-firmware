@@ -36,5 +36,5 @@ avrdude -p m2560 -c avrispmkII -P /dev/ttyACM0 -C /usr/local/etc/avrdude.conf -D
 # echo -ne "M115\n" >> /dev/ttyACM0
 
 marlin_data=$(python /bin/marlin-identify.py -d '/dev/ttyACM0' -s 250000);
-printf $marlin_data;
+echo $marlin_data;
 
