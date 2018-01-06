@@ -29,12 +29,14 @@ done
 INO_PATH="${opt_ino_path}";
 INO_FILE="${opt_ino_file}";
 BOARD_ID="${opt_board}";
+dt=$(date '+%F %T');
 
 mkdir -p "${WORKSPACE}/build";
 mkdir -p "${WORKSPACE}/dist";
 
 echo "#define USE_JENKINS_VERSIONING" >> "${WORKSPACE}/${INO_PATH}/Configuration_Alunar.h";
 sed -i 's|{{CI_BUILD_VERSION}}|${CI_BUILD_VERSION}|g' "${WORKSPACE}/${INO_PATH}/Configuration_Alunar.h"
+sed -i 's|{{CI_BUILD_DATE}}|${dt}|g' "${WORKSPACE}/${INO_PATH}/Configuration_Alunar.h"
 
 arduino-builder \
 	--compile \
@@ -47,5 +49,6 @@ arduino-builder \
 	-fqbn ${BOARD_ID} \
 	-build-path "${WORKSPACE}/build" \
 	"${WORKSPACE}/${INO_PATH}/${INO_FILE}";
+	
 mv ${WORKSPACE}/build/${INO_FILE}.hex ${WORKSPACE}/dist/${CI_PROJECT_NAME}-${CI_BUILD_VERSION}.hex
 mv ${WORKSPACE}/build/${INO_FILE}.with_bootloader.hex ${WORKSPACE}/dist/${CI_PROJECT_NAME}-${CI_BUILD_VERSION}-with_bootloader.hex

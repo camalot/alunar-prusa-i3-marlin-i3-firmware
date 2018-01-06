@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 set -e;
 
+__error() {
+	RED='\033[0;31m';
+	NC='\033[0m';
+	DT=$(date '+%F %T');
+	(>&2 echo -e "${YELLOW}[$DT]\t$(basename $0)\t${1:-"UNKNOWN ERROR"}${NC}");
+	exit 1;
+}
+
 for i in "$@"; do
 	case $i in
 		-h=*|--hex=*)
@@ -36,5 +44,7 @@ avrdude -p m2560 -c avrispmkII -P /dev/ttyACM0 -C /usr/local/etc/avrdude.conf -D
 # echo -ne "M115\n" >> /dev/ttyACM0
 
 marlin_data=$(python /bin/marlin-identify.py -d '/dev/ttyACM0' -s 250000);
-echo $marlin_data;
+
+[[ ! $marlin_data =~ echo:Marlin ]] && __error "Unable to located Marlin version";
+[[ ! $marlin_data =~ FIRMWARE_NAME:Marlin ]] && __error "Unable to located Marlin FIRMWARE_NAME";
 
