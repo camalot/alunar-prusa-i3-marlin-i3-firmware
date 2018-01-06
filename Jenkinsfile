@@ -57,17 +57,14 @@ node ("arduino") {
 					sh script: "${WORKSPACE}/.deploy/package.sh";
 				}
 				stage ("deploy") {
-					// sh script: "${WORKSPACE}/.deploy/deploy.sh -n '${ProjectName}' -v '${env.CI_BUILD_VERSION}'"
-					// this only will publish if the incoming branch IS develop
-					//Pipeline.publish_artifact(this, "${WORKSPACE}/dist/*.zip", "generic-local/arduino/${ProjectName}/${env.CI_BUILD_VERSION}/${ProjectName}-${env.CI_BUILD_VERSION}.zip")
-					// this only will publish if the incoming branch IS develop
+					if ( Branch.isDevelopBranch(this) ) {
+						Pipeline.publish_github(this, "camalot", ProjectName, "v${env.CI_BUILD_VERSION}", 
+								"${WORKSPACE}/dist/${CI_PROJECT_NAME}-${env.CI_BUILD_VERSION}.zip", true, false )
+
+					}
 					Branch.publish_to_master(this)
 					Pipeline.upload_artifact(this, "${WORKSPACE}/dist/*.zip", "generic-local/arduino/${ProjectName}/${env.CI_BUILD_VERSION}/${ProjectName}-${env.CI_BUILD_VERSION}.zip")
 					Pipeline.publish_buildInfo(this)
-					// after pushing to master, publish release
-					// this will only run on develop branch
-					Pipeline.publish_github(this, "camalot", ProjectName, "v${env.CI_BUILD_VERSION}", 
-							"${WORKSPACE}/dist/${CI_PROJECT_NAME}-${env.CI_BUILD_VERSION}.zip", true, false )
 				}
 				stage ('cleanup') {
 					Pipeline.cleanup(this)
