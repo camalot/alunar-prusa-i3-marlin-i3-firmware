@@ -26,6 +26,10 @@ done
 [[ -z "${opt_ino_path}" ]] && (>&2 echo "Missing --ino-file param") && exit 1;
 [[ -z "${opt_board}" ]] && (>&2 echo "Missing --board param") && exit 1;
 
+INO_PATH="${opt_ino_path}";
+INO_FILE="${opt_ino_file}";
+BOARD_ID="${opt_board}";
+
 mkdir -p "${WORKSPACE}/build";
 mkdir -p "${WORKSPACE}/dist";
 
@@ -42,6 +46,6 @@ arduino-builder \
 	-libraries /arduino/libraries \
 	-fqbn ${BOARD_ID} \
 	-build-path "${WORKSPACE}/build" \
-	"${WORKSPACE}/${INO_PATH}/${opt_ino_file}";
-mv ${WORKSPACE}/build/${opt_ino_file}.hex ${WORKSPACE}/dist/${CI_PROJECT_NAME}-${CI_BUILD_VERSION}.hex
-mv ${WORKSPACE}/build/${opt_ino_file}.with_bootloader.hex ${WORKSPACE}/dist/${CI_PROJECT_NAME}-${CI_BUILD_VERSION}-with_bootloader.hex
+	"${WORKSPACE}/${INO_PATH}/${INO_FILE}";
+mv ${WORKSPACE}/build/${INO_FILE}.hex ${WORKSPACE}/dist/${CI_PROJECT_NAME}-${CI_BUILD_VERSION}.hex
+mv ${WORKSPACE}/build/${INO_FILE}.with_bootloader.hex ${WORKSPACE}/dist/${CI_PROJECT_NAME}-${CI_BUILD_VERSION}-with_bootloader.hex
