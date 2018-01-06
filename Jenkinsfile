@@ -52,7 +52,10 @@ node ("arduino") {
 					sh script: "${WORKSPACE}/.deploy/build.sh --ino-file=\"${INO_FILE}\" --ino-path=\"${INO_PATH}\" --board=\"${BOARD_ID}\"" 
 				}
 				stage ("test") {
-					sh script: "${WORKSPACE}/.deploy/test.sh --hex=\"${WORKSPACE}/dist/${CI_PROJECT_NAME}-${CI_BUILD_VERSION}.hex\"" 
+					return_status = sh( returnStatus: true, script: "${WORKSPACE}/.deploy/test.sh --hex=\"${WORKSPACE}/dist/${CI_PROJECT_NAME}-${CI_BUILD_VERSION}.hex\"" )
+					if ( return_status == 255 ) {
+						currentBuild.result = "UNSTABLE";
+					}
 				}
 				stage ("package") {
 					sh script: "${WORKSPACE}/.deploy/package.sh";
@@ -76,7 +79,7 @@ node ("arduino") {
 				throw err
 			}
 			finally {
-				if(currentBuild.result == "SUCCESS") {
+				if(currentBuild.result == "SUCCESS" || currentBuild.result == "UNSTABLE" ) {
 					if (Branch.isMasterOrDevelopBranch(this)) {
 						currentBuild.displayName = "${env.CI_BUILD_VERSION}"
 					} else {
