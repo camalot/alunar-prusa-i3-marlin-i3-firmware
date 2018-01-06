@@ -2,7 +2,7 @@
 import com.bit13.jenkins.*
 
 properties ([
-	buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '5')),
+	buildDiscarder(logRotator(numToKeepStr: '25', artifactNumToKeepStr: '25')),
 	disableConcurrentBuilds(),
 	pipelineTriggers([
 		pollSCM('H/30 * * * *')		
