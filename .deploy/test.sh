@@ -5,8 +5,8 @@ __error() {
 	RED='\033[0;31m';
 	NC='\033[0m';
 	DT=$(date '+%F %T');
-	(>&2 echo -e "${YELLOW}[$DT]\t$(basename $0)\t${1:-"UNKNOWN ERROR"}${NC}");
-	exit 1;
+	(>&2 echo -e "${RED}[$DT]\t$(basename $0)\t${1:-"UNKNOWN ERROR"}${NC}");
+	exit 100;
 }
 
 __warning() {
@@ -44,7 +44,7 @@ mkdir -p /tmp/simduino;
 uart=$(docker run -d \
 	--user 0 \
 	-v /tmp/simduino:/dev/pts \
-	-t "${PULL_REPOSITORY}/camalot/mega2560simulator:latest");
+	"${PULL_REPOSITORY}/camalot/mega2560simulator:latest");
 	# --device=/dev/ttyACM0:/dev/pts/0 \
 
 sleep 5s;

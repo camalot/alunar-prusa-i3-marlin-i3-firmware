@@ -55,6 +55,8 @@ node ("arduino") {
 					return_status = sh( returnStatus: true, script: "${WORKSPACE}/.deploy/test.sh --hex=\"${WORKSPACE}/dist/${CI_PROJECT_NAME}-${CI_BUILD_VERSION}.hex\"" )
 					if ( return_status == 255 ) {
 						currentBuild.result = "UNSTABLE";
+					} else if ( return_status != 0 ) {
+						throw "Failed tests"
 					}
 				}
 				stage ("package") {
