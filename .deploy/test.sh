@@ -60,6 +60,8 @@ while [ $wait_count -lt 60 ]; do
 done
 echo "";
 
+ls -lFA /tmp/simduino;
+
 [ $wait_count -ne 99 ] && kill_mega "$uart" && __warning "Timeout exceeded waiting for device to become ready." && exit 255;
 
 if [[ ! -L /tmp/simduino/0 ]]; then
