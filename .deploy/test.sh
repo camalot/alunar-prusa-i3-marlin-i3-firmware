@@ -32,6 +32,7 @@ done
 
 PULL_REPOSITORY="${DOCKER_REGISTRY:-"docker.artifactory.bit13.local"}";
 
+mkdir -p /tmp/simduino;
 
 uart=$(docker run -d \
 	--user 0 \
@@ -43,6 +44,7 @@ sleep 5s;
 wait_count=0;
 
 echo "";
+echo "Waiting for device to become ready.";
 while [ $wait_count -lt 60 ]; do
 	[ -e /tmp/simduino/simavr-uart0 ] && wait_count=99;
 	sleep 1s;
