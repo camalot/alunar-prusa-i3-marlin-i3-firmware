@@ -31,24 +31,24 @@ PULL_REPOSITORY="${DOCKER_REGISTRY:-"docker.artifactory.bit13.local"}";
 
 uart=$(docker run -d \
 	--user 0 \
-	--device=/tmp/simavr-uart0:/tmp/simavr-uart0 \
+	--device=/dev/ttyACM0:/dev/pts/0 \
 	-t "${PULL_REPOSITORY}/camalot/mega2560simulator:latest");
 
 sleep 5s;
 
-if [[ ! -e /tmp/simavr-uart0 ]]; then
+if [[ ! -e /dev/ttyACM0 ]]; then
 	YELLOW='\033[0;33m';
 	NC='\033[0m';
 	DT=$(date '+%F %T');
-	(>&2 echo -e "${YELLOW}[$DT]\t$(basename $0)\tDevice /tmp/simavr-uart0 not found. Skipping avrdude tests.${NC}");
+	(>&2 echo -e "${YELLOW}[$DT]\t$(basename $0)\tDevice /dev/ttyACM0 not found. Skipping avrdude tests.${NC}");
 	exit 255;
 fi
 
 
-avrdude -p m2560 -c arduino -P /tmp/simavr-uart0 -C /usr/local/etc/avrdude.conf -D -U "flash:w:${opt_hex}:i"
-# avrdude -p m2560 -c avrispmkII -P /tmp/simavr-uart0 -C /usr/local/etc/avrdude.conf -D -U flash:v:${opt_hex}:i
+avrdude -p m2560 -c arduino -P /dev/ttyACM0 -C /usr/local/etc/avrdude.conf -D -U "flash:w:${opt_hex}:i"
+# avrdude -p m2560 -c avrispmkII -P /dev/ttyACM0 -C /usr/local/etc/avrdude.conf -D -U flash:v:${opt_hex}:i
 
-marlin_data=$(python /bin/marlin-identify.py -d '/tmp/simavr-uart0' -s 250000);
+marlin_data=$(python /bin/marlin-identify.py -d '/dev/ttyACM0' -s 250000);
 
 [[ ! $marlin_data =~ echo:Marlin ]] && __error "Unable to located Marlin version";
 [[ ! $marlin_data =~ FIRMWARE_NAME:Marlin ]] && __error "Unable to located Marlin FIRMWARE_NAME";
