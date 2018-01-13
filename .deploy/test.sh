@@ -44,7 +44,7 @@ mkdir -p /tmp/simduino;
 uart=$(docker run -d \
 	--user 0 \
 	-v /tmp/simduino:/dev/pts \
-	"${PULL_REPOSITORY}/camalot/mega2560simulator:latest");
+	-t "${PULL_REPOSITORY}/camalot/mega2560simulator:latest");
 	# --device=/dev/ttyACM0:/dev/pts/0 \
 
 sleep 5s;
@@ -53,7 +53,7 @@ wait_count=0;
 echo "";
 echo "Waiting for device to become ready.";
 while [ $wait_count -lt 60 ]; do
-	[ -e /tmp/simduino/0 ] && wait_count=99;
+	[ -c /tmp/simduino/0 ] && wait_count=99;
 	sleep 1s;
 	wait_count=$[$wait_count+1];
 	echo -n '.';
