@@ -47,9 +47,9 @@ while [ $wait_count -lt 60 ]; do
 done
 echo "";
 
-[ $wait_count -eq 99 ] && __error "Timeout exceeded waiting for device to become ready.";
+[ $wait_count -ne 99 ] && __error "Timeout exceeded waiting for device to become ready.";
 
-if [[ ! -e /tmp/simduino/simavr-uart0 ]]; then
+if [[ ! -L /tmp/simduino/simavr-uart0 ]]; then
 	YELLOW='\033[0;33m';
 	NC='\033[0m';
 	DT=$(date '+%F %T');
