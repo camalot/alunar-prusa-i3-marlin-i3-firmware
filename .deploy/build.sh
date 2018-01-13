@@ -23,7 +23,7 @@ for i in "$@"; do
 done
 
 [[ -z "${opt_ino_file}" ]] && (>&2 echo "Missing --ino-file param") && exit 1;
-[[ -z "${opt_ino_path}" ]] && (>&2 echo "Missing --ino-file param") && exit 1;
+[[ -z "${opt_ino_path}" ]] && (>&2 echo "Missing --ino-path param") && exit 1;
 [[ -z "${opt_board}" ]] && (>&2 echo "Missing --board param") && exit 1;
 
 INO_PATH="${opt_ino_path}";
@@ -35,8 +35,8 @@ mkdir -p "${WORKSPACE}/build";
 mkdir -p "${WORKSPACE}/dist";
 
 echo "#define USE_JENKINS_VERSIONING" >> "${WORKSPACE}/${INO_PATH}/Configuration_Alunar.h";
-sed -i 's|{{CI_BUILD_VERSION}}|${CI_BUILD_VERSION}|g' "${WORKSPACE}/${INO_PATH}/Configuration_Alunar.h"
-sed -i 's|{{CI_BUILD_DATE}}|${dt}|g' "${WORKSPACE}/${INO_PATH}/Configuration_Alunar.h"
+sed -i "s|{{CI_BUILD_VERSION}}|${CI_BUILD_VERSION}|g" "${WORKSPACE}/${INO_PATH}/Configuration_Alunar.h"
+sed -i "s|{{CI_BUILD_DATE}}|${dt}|g" "${WORKSPACE}/${INO_PATH}/Configuration_Alunar.h"
 
 arduino-builder \
 	--compile \
@@ -46,9 +46,9 @@ arduino-builder \
 	-tools /arduino/hardware/tools \
 	-tools /arduino/tools-builder \
 	-libraries /arduino/libraries \
-	-fqbn ${BOARD_ID} \
+	-fqbn "${BOARD_ID}" \
 	-build-path "${WORKSPACE}/build" \
 	"${WORKSPACE}/${INO_PATH}/${INO_FILE}";
 	
-mv ${WORKSPACE}/build/${INO_FILE}.hex ${WORKSPACE}/dist/${CI_PROJECT_NAME}-${CI_BUILD_VERSION}.hex
-mv ${WORKSPACE}/build/${INO_FILE}.with_bootloader.hex ${WORKSPACE}/dist/${CI_PROJECT_NAME}-${CI_BUILD_VERSION}-with_bootloader.hex
+mv "${WORKSPACE}/build/${INO_FILE}.hex" "${WORKSPACE}/dist/${CI_PROJECT_NAME}-${CI_BUILD_VERSION}.hex";
+mv "${WORKSPACE}/build/${INO_FILE}.with_bootloader.hex" "${WORKSPACE}/dist/${CI_PROJECT_NAME}-${CI_BUILD_VERSION}-with_bootloader.hex"''

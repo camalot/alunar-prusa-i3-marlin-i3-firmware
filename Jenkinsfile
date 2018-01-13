@@ -60,18 +60,16 @@ node ("arduino") {
 				stage ("package") {
 					sh script: "${WORKSPACE}/.deploy/package.sh";
 				}
-				stage ("deploy") {
+				stage ('publish') {
 					if ( Branch.isDevelopBranch(this) ) {
 						Pipeline.publish_github(this, "camalot", ProjectName, "v${env.CI_BUILD_VERSION}", 
 								"${WORKSPACE}/dist/${CI_PROJECT_NAME}-${env.CI_BUILD_VERSION}.zip", false, false )
 
 					}
+
 					Branch.publish_to_master(this)
 					Pipeline.upload_artifact(this, "${WORKSPACE}/dist/*.zip", "generic-local/arduino/${ProjectName}/${env.CI_BUILD_VERSION}/${ProjectName}-${env.CI_BUILD_VERSION}.zip")
 					Pipeline.publish_buildInfo(this)
-				}
-				stage ('cleanup') {
-					Pipeline.cleanup(this)
 				}
 			} catch(err) {
 				currentBuild.result = "FAILURE"
@@ -79,16 +77,7 @@ node ("arduino") {
 				throw err
 			}
 			finally {
-				if(currentBuild.result == "SUCCESS" || currentBuild.result == "UNSTABLE" ) {
-					if (Branch.isMasterOrDevelopBranch(this)) {
-						currentBuild.displayName = "${env.CI_BUILD_VERSION}"
-					} else {
-						currentBuild.displayName = "${env.CI_BUILD_VERSION} [#${env.BUILD_NUMBER}]"
-					}
-				} else {
-					Notify.gntp(this, "${ProjectName}: ${currentBuild.result}", errorMessage)
-				}
-				Notify.slack(this, currentBuild.result, errorMessage)
+				Pipeline.finish(this, currentBuild.result, errorMessage)
 			}
 		}
 	}

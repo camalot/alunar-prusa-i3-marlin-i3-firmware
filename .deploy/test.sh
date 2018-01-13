@@ -25,6 +25,17 @@ done
 [[ -z "${opt_hex// }" ]] && (>&2 echo "missing file to flash") && exit 1;
 [[ ! -f "${opt_hex}" ]] && (>&2 echo "hex file (${opt_hex}) does not exist.") && exit 1;
 
+
+PULL_REPOSITORY="${DOCKER_REGISTRY:-"docker.artifactory.bit13.local"}";
+
+
+uart=$(docker run -d \
+	--user 0 \
+	-p /dev/ttyACM0:/tmp/simavr-uart0 \
+	"${PULL_REPOSITORY}/camalot/mega2560emulator");
+
+sleep 5s;
+
 if [[ ! -e /dev/ttyACM0 ]]; then
 	YELLOW='\033[0;33m';
 	NC='\033[0m';
@@ -34,17 +45,13 @@ if [[ ! -e /dev/ttyACM0 ]]; then
 fi
 
 
-avrdude -p m2560 -c avrispmkII -P /dev/ttyACM0 -C /usr/local/etc/avrdude.conf -D -U flash:w:${opt_hex}:i
+avrdude -p m2560 -c arduino -P /dev/ttyACM0 -C /usr/local/etc/avrdude.conf -D -U "flash:w:${opt_hex}:i"
 # avrdude -p m2560 -c avrispmkII -P /dev/ttyACM0 -C /usr/local/etc/avrdude.conf -D -U flash:v:${opt_hex}:i
-
-# get baud rate
-# speed=$(stty -F /dev/ttyACM0 speed);
-# set baud
-# stty -F /dev/ttyACM0 115200;
-# echo -ne "M115\n" >> /dev/ttyACM0
 
 marlin_data=$(python /bin/marlin-identify.py -d '/dev/ttyACM0' -s 250000);
 
 [[ ! $marlin_data =~ echo:Marlin ]] && __error "Unable to located Marlin version";
 [[ ! $marlin_data =~ FIRMWARE_NAME:Marlin ]] && __error "Unable to located Marlin FIRMWARE_NAME";
 
+
+docker kill "$uart" && docker rm "$uart";
