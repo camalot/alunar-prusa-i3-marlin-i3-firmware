@@ -56,7 +56,7 @@ node ("arduino") {
 					if ( return_status == 255 ) {
 						currentBuild.result = "UNSTABLE";
 					} else if ( return_status != 0 ) {
-						throw "Failed tests"
+						throw new Exception("Failed tests")
 					}
 				}
 				stage ("package") {
