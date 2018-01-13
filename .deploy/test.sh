@@ -42,7 +42,6 @@ PULL_REPOSITORY="${DOCKER_REGISTRY:-"docker.artifactory.bit13.local"}";
 mkdir -p /tmp/simduino;
 
 uart=$(docker run -d \
-	--user 0:0 \
 	-v /tmp/simduino:/dev/pts \
 	"${PULL_REPOSITORY}/camalot/mega2560simulator:latest");
 	# --device=/dev/ttyACM0:/dev/pts/0 \
