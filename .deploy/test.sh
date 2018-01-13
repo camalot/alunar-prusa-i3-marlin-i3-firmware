@@ -9,6 +9,10 @@ __error() {
 	exit 1;
 }
 
+kill_mega() {
+	docker kill "$1" && docker rm "$1";
+}
+
 for i in "$@"; do
 	case $i in
 		-h=*|--hex=*)
@@ -47,13 +51,14 @@ while [ $wait_count -lt 60 ]; do
 done
 echo "";
 
-[ $wait_count -ne 99 ] && __error "Timeout exceeded waiting for device to become ready.";
+[ $wait_count -ne 99 ] && kill_mega "$uart" && __error "Timeout exceeded waiting for device to become ready.";
 
 if [[ ! -L /tmp/simduino/simavr-uart0 ]]; then
 	YELLOW='\033[0;33m';
 	NC='\033[0m';
 	DT=$(date '+%F %T');
 	(>&2 echo -e "${YELLOW}[$DT]\t$(basename $0)\tDevice /tmp/simduino/simavr-uart0 not found. Skipping avrdude tests.${NC}");
+	kill_mega "$uart";
 	exit 255;
 fi
 
@@ -66,5 +71,4 @@ marlin_data=$(python /bin/marlin-identify.py -d '/tmp/simduino/simavr-uart0' -s 
 [[ ! $marlin_data =~ echo:Marlin ]] && __error "Unable to located Marlin version";
 [[ ! $marlin_data =~ FIRMWARE_NAME:Marlin ]] && __error "Unable to located Marlin FIRMWARE_NAME";
 
-
-docker kill "$uart" && docker rm "$uart";
+kill_mega "$uart";
