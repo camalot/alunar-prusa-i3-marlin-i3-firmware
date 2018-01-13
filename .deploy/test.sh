@@ -32,7 +32,7 @@ PULL_REPOSITORY="${DOCKER_REGISTRY:-"docker.artifactory.bit13.local"}";
 uart=$(docker run -d \
 	--user 0 \
 	-v /dev/ttyACM0:/tmp/simavr-uart0 \
-	-t "${PULL_REPOSITORY}/camalot/mega2560emulator");
+	-t "${PULL_REPOSITORY}/camalot/mega2560simulator");
 
 sleep 5s;
 
